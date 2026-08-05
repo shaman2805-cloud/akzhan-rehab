@@ -402,3 +402,63 @@
     width: min(100%, 350px);
   }
 }
+/* Компактный блок "Почему выбирают нас" на мобильном */
+@media (max-width: 600px) {
+  .why-section {
+    padding: 54px 0;
+  }
+
+  .why-section .heading {
+    margin-bottom: 28px;
+  }
+
+  .why-section .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    margin-bottom: 10px;
+  }
+
+  .why-section h2 {
+    font-size: 38px;
+    line-height: 1.02;
+    margin: 0 0 18px;
+  }
+
+  .why-section .heading p {
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .why-card {
+    min-height: auto;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .why-icon {
+    width: auto;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 13px;
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  .why-card h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .why-card p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
