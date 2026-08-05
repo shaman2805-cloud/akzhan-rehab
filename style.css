@@ -2180,3 +2180,218 @@ section[id] {
     gap: 0 !important;
   }
 }
+/* ==================================================
+   РћР‘РЄР•Р”РРќРЃРќРќР«Р™ РџР•Р Р’Р«Р™ Р­РљР РђРќ
+   Akzhan Rehab + РїСЂРµРёРјСѓС‰РµСЃС‚РІР° РЅР° РѕРґРЅРѕРј СЌРєСЂР°РЅРµ
+================================================== */
+
+.hero-combined {
+  min-height: auto;
+  padding: 54px 0 64px;
+  align-items: flex-start;
+}
+
+.hero-combined-layout {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-combined-heading {
+  max-width: 840px;
+}
+
+.hero-combined .hero-title {
+  margin-bottom: 42px;
+}
+
+.hero-why-label {
+  margin: 0 0 12px;
+  color: var(--terra);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.hero-why-title {
+  max-width: 780px;
+  margin: 0 0 14px;
+  font-family: Georgia, serif;
+  color: var(--ink);
+  font-size: clamp(40px, 5vw, 66px);
+  font-weight: 500;
+  line-height: 1.03;
+  letter-spacing: -.045em;
+}
+
+.hero-why-text {
+  max-width: 680px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.hero-why-grid {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.hero-why-card {
+  min-width: 0;
+  padding: 22px 28px 22px 0;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  column-gap: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-why-card:nth-child(odd) {
+  padding-right: 30px;
+  border-right: 1px solid var(--line);
+}
+
+.hero-why-card:nth-child(even) {
+  padding-left: 30px;
+}
+
+.hero-why-card span {
+  padding-top: 4px;
+  color: var(--terra);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.hero-why-card h3 {
+  margin: 0 0 6px;
+  font-family: Georgia, serif;
+  color: var(--ink);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.12;
+}
+
+.hero-why-card p {
+  grid-column: 2;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.hero-combined-action {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-combined-action .btn {
+  min-width: min(100%, 360px);
+}
+
+/* РџР»Р°РЅС€РµС‚ */
+@media (max-width: 900px) {
+  .hero-combined {
+    padding: 42px 0 52px;
+  }
+
+  .hero-combined .hero-title {
+    margin-bottom: 34px;
+  }
+
+  .hero-why-title {
+    font-size: clamp(38px, 7vw, 52px);
+  }
+}
+
+/* РўРµР»РµС„РѕРЅ */
+@media (max-width: 767px) {
+  .hero-combined {
+    padding: 24px 0 34px !important;
+  }
+
+  .hero-combined .hero-eyebrow {
+    margin-bottom: 7px !important;
+  }
+
+  .hero-combined .hero-title {
+    margin: 0 0 28px !important;
+    font-size: clamp(42px, 11vw, 50px) !important;
+    line-height: .98 !important;
+  }
+
+  .hero-why-label {
+    margin-bottom: 8px;
+    font-size: 10px;
+  }
+
+  .hero-why-title {
+    margin-bottom: 10px;
+    font-size: clamp(32px, 8.8vw, 38px);
+    line-height: 1.02;
+  }
+
+  .hero-why-text {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .hero-why-grid {
+    margin-top: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    border-top: 0;
+  }
+
+  .hero-why-card,
+  .hero-why-card:nth-child(odd),
+  .hero-why-card:nth-child(even) {
+    min-height: 104px;
+    padding: 14px;
+    display: block;
+    background: rgba(255, 253, 249, .72);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-why-card span {
+    display: block;
+    padding: 0;
+    margin-bottom: 9px;
+  }
+
+  .hero-why-card h3 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.15;
+  }
+
+  .hero-why-card p {
+    display: none;
+  }
+
+  .hero-combined-action {
+    margin-top: 18px;
+  }
+
+  .hero-combined-action .btn {
+    width: 100%;
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 370px) {
+  .hero-why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-why-card,
+  .hero-why-card:nth-child(odd),
+  .hero-why-card:nth-child(even) {
+    min-height: auto;
+  }
+}
