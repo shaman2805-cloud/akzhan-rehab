@@ -1010,3 +1010,21 @@ svg {
   }
 
 }
+/* Убираем большой пустой отступ в блоке результатов на телефоне */
+@media (max-width: 768px) {
+  #results,
+  .results,
+  .results-section,
+  .before-after-section {
+    padding-top: 20px !important;
+    margin-top: 0 !important;
+    min-height: auto !important;
+  }
+
+  #results .container,
+  .results .container,
+  .results-section .container {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+}
