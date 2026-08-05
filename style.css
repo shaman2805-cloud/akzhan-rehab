@@ -2158,3 +2158,25 @@ section[id] {
     min-height: auto;
   }
 }
+/* ==================================================
+   HERO ULTRA COMPACT вЂ” СѓРґР°Р»РµРЅС‹ РїРѕРґР·Р°РіРѕР»РѕРІРѕРє Рё РѕРїРёСЃР°РЅРёРµ
+================================================== */
+
+@media (max-width: 767px) {
+  .hero {
+    min-height: auto !important;
+    padding: 22px 0 24px !important;
+  }
+
+  .hero-eyebrow {
+    margin-bottom: 8px !important;
+  }
+
+  .hero-title {
+    margin-bottom: 0 !important;
+  }
+
+  .hero-content {
+    gap: 0 !important;
+  }
+}
