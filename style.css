@@ -231,126 +231,151 @@
 .heading p{
     max-width:760px;
 }
-/* Мобильная версия первого экрана */
-@media (max-width: 768px) {
+/* =========================
+   Правильная мобильная версия Hero
+========================= */
+
+@media (max-width: 850px) {
   .hero {
-    padding: 32px 20px 80px;
     min-height: auto;
+    padding: 38px 0 64px;
+    align-items: flex-start;
     overflow: hidden;
   }
 
-  .hero-container,
-  .hero-content,
-  .hero-inner {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 100%;
-    gap: 30px;
-  }
-
-  .hero-text {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .hero h1 {
-    font-size: 58px;
-    line-height: 0.95;
-    margin-bottom: 28px;
-  }
-
-  .hero h2,
-  .hero-title-small {
-    font-size: 34px;
-    line-height: 1.1;
-  }
-
-  .hero-description {
-    font-size: 22px;
-    line-height: 1.5;
-    max-width: 100%;
-  }
-
-  .hero-image,
-  .hero-photo,
-  .hero-image-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    height: 480px;
-    right: auto;
-    top: auto;
-    order: 2;
-  }
-
-  .hero-image img,
-  .hero-photo img,
-  .hero-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    border-radius: 38px;
-  }
-
-  .hero-features,
-  .hero-stats,
-  .advantages-grid {
+  .hero-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
-    position: relative;
-    z-index: 2;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: start;
   }
 
-  .hero-feature,
-  .hero-stat,
-  .advantage-card {
+  .hero-content {
     width: 100%;
+    max-width: none;
+  }
+
+  .hero-eyebrow {
+    margin-bottom: 12px;
+  }
+
+  .hero-title {
+    font-size: clamp(48px, 14vw, 62px);
+    line-height: 0.96;
+    margin-bottom: 18px;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(28px, 8vw, 36px);
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+
+  .hero-lead {
+    max-width: 100%;
+    font-size: 18px;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  .hero-benefits {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .hero-benefit {
     min-width: 0;
-    min-height: 150px;
-    padding: 20px 12px;
-    font-size: 17px;
-    line-height: 1.35;
+    min-height: 112px;
+    padding: 14px 12px;
+    font-size: 14px;
+    line-height: 1.4;
     overflow-wrap: anywhere;
   }
 
-  .hero-button,
-  .hero .button,
-  .hero .btn {
+  .hero-check {
+    font-size: 13px;
+  }
+
+  .hero-actions {
     width: 100%;
-    position: relative;
-    margin-top: 20px;
-    text-align: center;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    margin: 0;
+  }
+
+  .hero-trust {
+    display: flex;
+    width: 100%;
+    max-width: none;
+  }
+
+  .hero-visual {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero-photo-frame {
+    width: min(100%, 420px);
+    margin: 0 auto;
+    padding: 8px;
+    border-radius: 30px;
+    animation: none;
+  }
+
+  .hero-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 15%;
+    border-radius: 23px;
+    transform: none;
+  }
+
+  .hero-photo-frame:hover .hero-photo {
+    transform: none;
   }
 }
 
 @media (max-width: 430px) {
-  .hero h1 {
-    font-size: 52px;
+  .hero {
+    padding: 28px 0 52px;
   }
 
-  .hero h2,
-  .hero-title-small {
-    font-size: 31px;
+  .hero-layout {
+    gap: 28px;
   }
 
-  .hero-description {
-    font-size: 20px;
+  .hero-title {
+    font-size: 50px;
   }
 
-  .hero-image,
-  .hero-photo,
-  .hero-image-wrapper {
-    height: 440px;
+  .hero-subtitle {
+    font-size: 29px;
   }
 
-  .hero-feature,
-  .hero-stat,
-  .advantage-card {
-    font-size: 16px;
-    min-height: 140px;
+  .hero-lead {
+    font-size: 17px;
+  }
+
+  .hero-benefit {
+    min-height: 108px;
+    padding: 13px 10px;
+    font-size: 13px;
+    gap: 7px;
+  }
+
+  .hero-photo-frame {
+    width: min(100%, 350px);
   }
 }
