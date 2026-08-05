@@ -279,24 +279,27 @@
   }
 
   .hero-benefits {
-    width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 10px;
+    width: 100%;
     margin-bottom: 24px;
   }
-
-  .hero-benefit{
-    min-width: 0;
-    min-height: 82px;
-    padding: 14px 12px;
+  
+  .hero-benefit {
+    min-height: auto;
+    padding: 13px 16px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 14px;
     line-height: 1.4;
-    align-items: center;
-    overflow-wrap: anywhere;
-}
-
+  }
+  
   .hero-check {
-    font-size: 13px;
+    flex: 0 0 auto;
+    font-size: 14px;
   }
 
   .hero-actions {
