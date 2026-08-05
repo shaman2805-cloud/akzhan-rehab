@@ -955,3 +955,58 @@ svg {
   }
 }
 }
+/* ===========================
+   ДО / ПОСЛЕ — МОБИЛЬНАЯ ВЕРСИЯ
+=========================== */
+
+.before-after{
+  width:100%;
+}
+
+.before-after-slider{
+  position:relative;
+  width:100%;
+  height:700px;
+  overflow:hidden;
+  border-radius:28px;
+}
+
+.before-after-slider img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* Планшеты */
+@media (max-width:992px){
+
+  .before-after-slider{
+      height:650px;
+  }
+
+}
+
+/* Телефоны */
+@media (max-width:768px){
+
+  .before-after-slider{
+      height:700px;
+      border-radius:22px;
+  }
+
+  .before-after-slider img{
+      object-fit:cover;
+  }
+
+}
+
+/* Маленькие телефоны */
+@media (max-width:480px){
+
+  .before-after-slider{
+      height:750px;
+      border-radius:18px;
+  }
+
+}
