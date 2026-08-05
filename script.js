@@ -1,3 +1,7 @@
+/* ========================================
+   Мобильное меню
+======================================== */
+
 const burger = document.querySelector('.burger');
 const mobileMenu = document.querySelector('.mobile-menu');
 
@@ -11,7 +15,10 @@ mobileMenu?.querySelectorAll('a').forEach((link) => {
   });
 });
 
-/* Анимация появления блоков */
+
+/* ========================================
+   Анимация появления элементов
+======================================== */
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
@@ -23,8 +30,8 @@ const revealObserver = new IntersectionObserver(
     });
   },
   {
-    threshold: 0.12,
-    rootMargin: '0px 0px -40px 0px'
+    threshold: 0.08,
+    rootMargin: '0px 0px -20px 0px'
   }
 );
 
@@ -32,9 +39,47 @@ document.querySelectorAll('.reveal').forEach((element) => {
   revealObserver.observe(element);
 });
 
-/* Галереи */
+
+/* ========================================
+   Загрузка фотографий
+======================================== */
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+
+/*
+  Быстрая загрузка списка фотографий.
+  Файлы не проверяются по одному, поэтому галерея
+  появляется практически сразу.
+*/
+
+async function loadManifest(folder) {
+  try {
+    const response = await fetch(`${folder}/manifest.json`, {
+      cache: 'default'
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const files = await response.json();
+
+    if (!Array.isArray(files) || files.length === 0) {
+      return null;
+    }
+
+    return files.map((file) => `${folder}/${file}`);
+  } catch (error) {
+    console.error(`Ошибка загрузки ${folder}/manifest.json`, error);
+    return null;
+  }
+}
+
+
+/*
+  Резервный поиск фотографий 1.jpg, 2.jpg и т. д.
+  Используется только тогда, когда manifest.json отсутствует.
+*/
 
 function imageExists(src) {
   return new Promise((resolve) => {
@@ -46,47 +91,17 @@ function imageExists(src) {
   });
 }
 
-async function loadManifest(folder) {
-  try {
-    const response = await fetch(`${folder}/manifest.json`, {
-      cache: 'no-cache'
-    });
-
-    if (!response.ok) return null;
-
-    const files = await response.json();
-
-    if (!Array.isArray(files) || files.length === 0) {
-      return null;
-    }
-
-    const checks = await Promise.all(
-      files.map(async (file) => {
-        const src = `${folder}/${file}`;
-        const exists = await imageExists(src);
-
-        return exists ? src : null;
-      })
-    );
-
-    const verifiedImages = checks.filter(Boolean);
-
-    return verifiedImages.length ? verifiedImages : null;
-  } catch (error) {
-    console.error('Не удалось загрузить manifest.json:', error);
-    return null;
-  }
-}
-
 async function discoverNumberedImages(folder, max = 60) {
   const images = [];
 
   for (let index = 1; index <= max; index += 1) {
-    const checks = await Promise.all(
-      IMAGE_EXTENSIONS.map(async (extension) => {
-        const src = `${folder}/${index}.${extension}`;
-        const exists = await imageExists(src);
+    const possibleImages = IMAGE_EXTENSIONS.map(
+      (extension) => `${folder}/${index}.${extension}`
+    );
 
+    const checks = await Promise.all(
+      possibleImages.map(async (src) => {
+        const exists = await imageExists(src);
         return exists ? src : null;
       })
     );
@@ -95,7 +110,9 @@ async function discoverNumberedImages(folder, max = 60) {
 
     if (foundImage) {
       images.push(foundImage);
-    } else if (images.length) {
+    } else if (images.length > 0) {
+      break;
+    } else if (index >= 3) {
       break;
     }
   }
@@ -104,16 +121,19 @@ async function discoverNumberedImages(folder, max = 60) {
 }
 
 async function discoverImages(folder) {
-  const imagesFromManifest = await loadManifest(folder);
+  const manifestImages = await loadManifest(folder);
 
-  if (imagesFromManifest?.length) {
-    return imagesFromManifest;
+  if (manifestImages?.length) {
+    return manifestImages;
   }
 
   return discoverNumberedImages(folder);
 }
 
-/* Слайдер */
+
+/* ========================================
+   Слайдер фотографий
+======================================== */
 
 class GallerySlider {
   constructor(root, images, lightbox) {
@@ -136,24 +156,18 @@ class GallerySlider {
 
     this.render();
     this.bindEvents();
-    this.update();
+    this.update(false);
+    this.preloadNextImages();
     this.startAutoPlay();
   }
 
   render() {
     if (!this.images.length) {
       this.root.innerHTML = `
-        <div class="gallery-empty reveal">
+        <div class="gallery-empty">
           <p>Фотографии скоро появятся в этой галерее.</p>
         </div>
       `;
-
-      const emptyBlock = this.root.querySelector('.reveal');
-
-      if (emptyBlock) {
-        revealObserver.observe(emptyBlock);
-      }
-
       return;
     }
 
@@ -185,7 +199,10 @@ class GallerySlider {
                   fill="none"
                 >
                   <path
-                    d="M7.5 3H4.5C3.67 3 3 3.67 3 4.5V7.5M11.5 3H14.5C15.33 3 16 3.67 16 4.5V7.5M11.5 15H14.5C15.33 15 16 14.33 16 13.5V10.5M7.5 15H4.5C3.67 15 3 14.33 3 13.5V10.5"
+                    d="M7.5 3H4.5C3.67 3 3 3.67 3 4.5V7.5
+                       M11.5 3H14.5C15.33 3 16 3.67 16 4.5V7.5
+                       M11.5 15H14.5C15.33 15 16 14.33 16 13.5V10.5
+                       M7.5 15H4.5C3.67 15 3 14.33 3 13.5V10.5"
                     stroke="currentColor"
                     stroke-width="1.4"
                     stroke-linecap="round"
@@ -204,8 +221,8 @@ class GallerySlider {
           <button
             class="slider-dot${index === 0 ? ' is-active' : ''}"
             type="button"
-            aria-label="Слайд ${index + 1}"
             data-index="${index}"
+            aria-label="Перейти к фото ${index + 1}"
           ></button>
         `
       )
@@ -237,6 +254,7 @@ class GallerySlider {
       if (!card) return;
 
       this.stopAutoPlay();
+
       this.lightbox.open(
         this.images,
         Number(card.dataset.index)
@@ -301,6 +319,13 @@ class GallerySlider {
     });
   }
 
+  preloadNextImages() {
+    this.images.slice(1, 4).forEach((src) => {
+      const image = new Image();
+      image.src = src;
+    });
+  }
+
   startAutoPlay() {
     if (this.images.length <= 1) return;
 
@@ -330,7 +355,7 @@ class GallerySlider {
       (nextIndex + this.images.length) %
       this.images.length;
 
-    this.update();
+    this.update(true);
 
     if (restartTimer) {
       this.restartAutoPlay();
@@ -361,17 +386,22 @@ class GallerySlider {
         );
       });
 
+    const onlyOneImage = this.images.length <= 1;
+
     if (this.prevBtn) {
-      this.prevBtn.disabled = this.images.length <= 1;
+      this.prevBtn.disabled = onlyOneImage;
     }
 
     if (this.nextBtn) {
-      this.nextBtn.disabled = this.images.length <= 1;
+      this.nextBtn.disabled = onlyOneImage;
     }
   }
 }
 
-/* Просмотр фотографий на весь экран */
+
+/* ========================================
+   Просмотр фотографии на весь экран
+======================================== */
 
 class Lightbox {
   constructor(root) {
@@ -401,9 +431,7 @@ class Lightbox {
     });
 
     document.addEventListener('keydown', (event) => {
-      if (!this.root.classList.contains('is-open')) {
-        return;
-      }
+      if (!this.root.classList.contains('is-open')) return;
 
       if (event.key === 'Escape') {
         this.close();
@@ -471,19 +499,32 @@ class Lightbox {
         `${this.index + 1} / ${this.images.length}`;
     }
 
-    const hasOnlyOneImage = this.images.length <= 1;
+    const onlyOneImage = this.images.length <= 1;
 
     if (this.prevBtn) {
-      this.prevBtn.hidden = hasOnlyOneImage;
+      this.prevBtn.hidden = onlyOneImage;
     }
 
     if (this.nextBtn) {
-      this.nextBtn.hidden = hasOnlyOneImage;
+      this.nextBtn.hidden = onlyOneImage;
     }
   }
 }
 
-/* Запуск всех галерей */
+
+/* ========================================
+   Запуск галерей
+======================================== */
+
+async function createGallery(sliderRoot, lightbox) {
+  const folder = sliderRoot.dataset.folder;
+
+  if (!folder) return;
+
+  const images = await discoverImages(folder);
+
+  new GallerySlider(sliderRoot, images, lightbox);
+}
 
 async function initGalleries() {
   const lightboxRoot = document.getElementById('lightbox');
@@ -494,21 +535,20 @@ async function initGalleries() {
   }
 
   const lightbox = new Lightbox(lightboxRoot);
-  const sliders = document.querySelectorAll('[data-gallery]');
+  const sliders = [
+    ...document.querySelectorAll('[data-gallery]')
+  ];
 
-  for (const sliderRoot of sliders) {
-    const folder = sliderRoot.dataset.folder;
+  /*
+    Обе галереи загружаются одновременно:
+    отзывы и фотографии до/после.
+  */
 
-    if (!folder) continue;
-
-    const images = await discoverImages(folder);
-
-    new GallerySlider(
-      sliderRoot,
-      images,
-      lightbox
-    );
-  }
+  await Promise.all(
+    sliders.map((sliderRoot) => {
+      return createGallery(sliderRoot, lightbox);
+    })
+  );
 }
 
 initGalleries();
