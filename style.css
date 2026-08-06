@@ -2528,4 +2528,22 @@ section[id] {
     transition: none !important;
   }
 }
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
 
+.designer-credit {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
