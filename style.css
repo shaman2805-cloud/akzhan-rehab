@@ -2395,3 +2395,29 @@ section[id] {
     min-height: auto;
   }
 }
+/* Чередование карточек услуг */
+
+.service:nth-child(even) {
+  background: #173d37;
+  color: #fff;
+}
+
+.service:nth-child(even) h3,
+.service:nth-child(even) p,
+.service:nth-child(even) b,
+.service:nth-child(even) span,
+.service:nth-child(even) a {
+  color: #fff;
+}
+
+.service:nth-child(even) .meta {
+  border-color: rgba(255,255,255,.15);
+}
+
+.service:nth-child(even) a {
+  border-top: 1px solid rgba(255,255,255,.15);
+}
+
+.service:nth-child(even):hover {
+  background: #1c4a42;
+}
