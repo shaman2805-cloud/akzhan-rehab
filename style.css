@@ -2424,32 +2424,34 @@ section[id] {
 /* Компактные карточки преимуществ на мобильной версии */
 @media (max-width: 768px) {
 
-  .hero-why-grid{
-      gap:12px;
+  .hero-why-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
   }
-  
-  .hero-why-card{
-      min-height:120px !important;
-      height:120px;
-      padding:18px !important;
-  
-      display:flex;
-      align-items:flex-start;
-      justify-content:flex-start;
+
+  .hero-why-card,
+  .hero-why-card:nth-child(odd),
+  .hero-why-card:nth-child(even) {
+    min-height: 95px !important;
+    height: 95px !important;
+    padding: 16px !important;
+
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+
+    border: 1px solid rgba(23, 61, 55, 0.14) !important;
+    border-radius: 20px !important;
   }
-  
-  .hero-why-card h3{
-      margin:0;
-      font-size:18px;
-      line-height:1.2;
+
+  .hero-why-card h3 {
+    margin: 0 !important;
+    font-size: 18px !important;
+    line-height: 1.18 !important;
   }
-  
-  .hero-why-card p{
-      display:none;
+
+  .hero-why-card p,
+  .hero-why-card span {
+    display: none !important;
   }
-  
-  .hero-why-card span{
-      display:none;
-  }
-  
-  }
+}
