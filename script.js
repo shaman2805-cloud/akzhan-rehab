@@ -6,38 +6,52 @@ const burger = document.querySelector('.burger');
 const mobileMenu = document.querySelector('.mobile-menu');
 
 burger?.addEventListener('click', () => {
-  mobileMenu?.classList.toggle('open');
+  const isOpen = mobileMenu?.classList.toggle('open') ?? false;
+  burger.setAttribute('aria-expanded', String(isOpen));
 });
 
 mobileMenu?.querySelectorAll('a').forEach((link) => {
   link.addEventListener('click', () => {
     mobileMenu.classList.remove('open');
+    burger?.setAttribute('aria-expanded', 'false');
   });
 });
 
 
 /* ========================================
    Анимация появления элементов
+   Срабатывает повторно при прокрутке вниз и вверх
 ======================================== */
 
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
+const revealElements = document.querySelectorAll('.reveal');
+const prefersReducedMotion = window.matchMedia(
+  '(prefers-reduced-motion: reduce)'
+).matches;
 
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
-    });
-  },
-  {
-    threshold: 0.08,
-    rootMargin: '0px 0px -20px 0px'
-  }
-);
+if (prefersReducedMotion) {
+  revealElements.forEach((element) => {
+    element.classList.add('visible');
+  });
+} else {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle(
+          'visible',
+          entry.isIntersecting
+        );
+      });
+    },
+    {
+      threshold: 0.08,
+      rootMargin: '0px 0px -20px 0px'
+    }
+  );
 
-document.querySelectorAll('.reveal').forEach((element) => {
-  revealObserver.observe(element);
-});
+  revealElements.forEach((element) => {
+    revealObserver.observe(element);
+  });
+}
 
 
 /* ========================================

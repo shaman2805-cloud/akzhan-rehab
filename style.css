@@ -2421,40 +2421,7 @@ section[id] {
 .service:nth-child(even):hover {
   background: #1c4a42;
 }
-/* Компактные карточки преимуществ на мобильной версии */
-@media (max-width: 768px) {
 
-  .hero-why-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-  }
-
-  .hero-why-card,
-  .hero-why-card:nth-child(odd),
-  .hero-why-card:nth-child(even) {
-    min-height: 95px !important;
-    height: 95px !important;
-    padding: 16px !important;
-
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-
-    border: 1px solid rgba(23, 61, 55, 0.14) !important;
-    border-radius: 20px !important;
-  }
-
-  .hero-why-card h3 {
-    margin: 0 !important;
-    font-size: 18px !important;
-    line-height: 1.18 !important;
-  }
-
-  .hero-why-card p,
-  .hero-why-card span {
-    display: none !important;
-  }
-}
 /* ===========================================
    Компактный список преимуществ
 =========================================== */
@@ -2515,28 +2482,50 @@ section[id] {
 }
 
 }
-/* Анимация появления преимуществ по очереди */
 
-.hero-why-item{
-  opacity:0;
-  transform:translateY(18px);
-  animation:fadeUp .6s ease forwards;
+/* ===========================================
+   Повторная анимация преимуществ по очереди
+=========================================== */
+
+.hero-why-item.reveal {
+  transition-duration: .5s;
+  transition-timing-function: var(--ease);
 }
 
-.hero-why-item:nth-child(1){animation-delay:.10s;}
-.hero-why-item:nth-child(2){animation-delay:.20s;}
-.hero-why-item:nth-child(3){animation-delay:.30s;}
-.hero-why-item:nth-child(4){animation-delay:.40s;}
-.hero-why-item:nth-child(5){animation-delay:.50s;}
-.hero-why-item:nth-child(6){animation-delay:.60s;}
+.hero-why-item.reveal:not(.visible) {
+  transition-delay: 0s;
+}
 
-@keyframes fadeUp{
-  from{
-      opacity:0;
-      transform:translateY(18px);
-  }
-  to{
-      opacity:1;
-      transform:translateY(0);
+.hero-why-item.reveal.visible:nth-child(1) {
+  transition-delay: .05s;
+}
+
+.hero-why-item.reveal.visible:nth-child(2) {
+  transition-delay: .10s;
+}
+
+.hero-why-item.reveal.visible:nth-child(3) {
+  transition-delay: .15s;
+}
+
+.hero-why-item.reveal.visible:nth-child(4) {
+  transition-delay: .20s;
+}
+
+.hero-why-item.reveal.visible:nth-child(5) {
+  transition-delay: .25s;
+}
+
+.hero-why-item.reveal.visible:nth-child(6) {
+  transition-delay: .30s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
+
