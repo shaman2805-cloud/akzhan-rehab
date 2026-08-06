@@ -2421,3 +2421,35 @@ section[id] {
 .service:nth-child(even):hover {
   background: #1c4a42;
 }
+/* Компактные карточки преимуществ на мобильной версии */
+@media (max-width: 768px) {
+
+  .hero-why-grid{
+      gap:12px;
+  }
+  
+  .hero-why-card{
+      min-height:120px !important;
+      height:120px;
+      padding:18px !important;
+  
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+  }
+  
+  .hero-why-card h3{
+      margin:0;
+      font-size:18px;
+      line-height:1.2;
+  }
+  
+  .hero-why-card p{
+      display:none;
+  }
+  
+  .hero-why-card span{
+      display:none;
+  }
+  
+  }
