@@ -2421,3 +2421,61 @@ section[id] {
 .service:nth-child(even):hover {
   background: #1c4a42;
 }
+/* ===========================================
+   Компактные преимущества на мобильной версии
+=========================================== */
+
+@media (max-width:768px){
+
+  .hero-why-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-top:22px;
+  }
+  
+  .hero-why-card{
+      min-height:95px !important;
+      height:95px !important;
+  
+      padding:16px !important;
+  
+      display:flex !important;
+      align-items:flex-start;
+      justify-content:flex-start;
+  
+      border-radius:20px;
+  }
+  
+  /* Убираем номера */
+  .hero-why-card span{
+      display:none !important;
+  }
+  
+  /* Убираем описание */
+  .hero-why-card p{
+      display:none !important;
+  }
+  
+  /* Заголовок */
+  .hero-why-card h3{
+      margin:0;
+      font-size:18px;
+      line-height:1.2;
+      font-weight:600;
+  
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+  }
+  
+  /* Добавляем зелёную галочку */
+  .hero-why-card h3::before{
+      content:"✓";
+      color:#27AE60;
+      font-weight:700;
+      font-size:18px;
+      flex-shrink:0;
+  }
+  
+  }
