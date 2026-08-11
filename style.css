@@ -2608,3 +2608,41 @@ section[id] {
     padding: 0 20px;
   }
 }
+/* Уменьшаем большие отступы на первом экране */
+@media (max-width: 768px) {
+
+  .hero-combined {
+    padding-bottom: 32px !important;
+  }
+
+  .hero-why-list {
+    gap: 16px !important;
+  }
+
+  .hero-ai-wrap {
+    margin-top: 16px !important;
+  }
+
+  .hero-ai-note {
+    margin-top: 8px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .hero-combined-action {
+    margin-top: 18px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .results-section {
+    padding-top: 42px !important;
+  }
+}
+@media (max-width: 768px) {
+  .hero-ai-btn {
+    min-height: 54px;
+  }
+
+  .hero-services-btn {
+    min-height: 54px;
+  }
+}
