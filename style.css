@@ -2547,3 +2547,16 @@ section[id] {
     gap: 6px;
   }
 }
+.hero-ai-btn {
+  margin-top: 22px;
+  width: fit-content;
+}
+
+@media (max-width: 768px) {
+  .hero-ai-btn {
+    width: 100%;
+    margin-top: 16px;
+    min-height: 54px;
+    text-align: center;
+  }
+}
