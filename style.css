@@ -2646,3 +2646,27 @@ section[id] {
     min-height: 54px;
   }
 }
+/* FIX MOBILE HERO — Safari + Instagram */
+
+@media (max-width: 768px) {
+
+  .hero-why-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .hero-ai-wrap {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+  }
+
+  .hero-combined-action {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+  }
+
+  .hero-ai-btn,
+  .hero-services-btn {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
