@@ -1,5 +1,5 @@
 /* ========================================
-   Мобильное меню
+   МОБИЛЬНОЕ МЕНЮ
 ======================================== */
 
 const burger = document.querySelector('.burger');
@@ -19,11 +19,11 @@ mobileMenu?.querySelectorAll('a').forEach((link) => {
 
 
 /* ========================================
-   Анимация появления элементов
-   Срабатывает повторно при прокрутке вниз и вверх
+   АНИМАЦИЯ ПОЯВЛЕНИЯ
 ======================================== */
 
 const revealElements = document.querySelectorAll('.reveal');
+
 const prefersReducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)'
 ).matches;
@@ -55,22 +55,24 @@ if (prefersReducedMotion) {
 
 
 /* ========================================
-   Загрузка фотографий
+   ЗАГРУЗКА ФОТОГРАФИЙ
 ======================================== */
 
-const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
-
-/*
-  Быстрая загрузка списка фотографий.
-  Файлы не проверяются по одному, поэтому галерея
-  появляется практически сразу.
-*/
+const IMAGE_EXTENSIONS = [
+  'jpg',
+  'jpeg',
+  'png',
+  'webp'
+];
 
 async function loadManifest(folder) {
   try {
-    const response = await fetch(`${folder}/manifest.json`, {
-      cache: 'default'
-    });
+    const response = await fetch(
+      `${folder}/manifest.json`,
+      {
+        cache: 'default'
+      }
+    );
 
     if (!response.ok) {
       return null;
@@ -78,22 +80,26 @@ async function loadManifest(folder) {
 
     const files = await response.json();
 
-    if (!Array.isArray(files) || files.length === 0) {
+    if (
+      !Array.isArray(files) ||
+      files.length === 0
+    ) {
       return null;
     }
 
-    return files.map((file) => `${folder}/${file}`);
+    return files.map(
+      (file) => `${folder}/${file}`
+    );
   } catch (error) {
-    console.error(`Ошибка загрузки ${folder}/manifest.json`, error);
+    console.error(
+      `Ошибка загрузки ${folder}/manifest.json`,
+      error
+    );
+
     return null;
   }
 }
 
-
-/*
-  Резервный поиск фотографий 1.jpg, 2.jpg и т. д.
-  Используется только тогда, когда manifest.json отсутствует.
-*/
 
 function imageExists(src) {
   return new Promise((resolve) => {
@@ -101,26 +107,42 @@ function imageExists(src) {
 
     image.onload = () => resolve(true);
     image.onerror = () => resolve(false);
+
     image.src = src;
   });
 }
 
-async function discoverNumberedImages(folder, max = 60) {
+
+async function discoverNumberedImages(
+  folder,
+  max = 60
+) {
   const images = [];
 
-  for (let index = 1; index <= max; index += 1) {
-    const possibleImages = IMAGE_EXTENSIONS.map(
-      (extension) => `${folder}/${index}.${extension}`
-    );
+  for (
+    let index = 1;
+    index <= max;
+    index += 1
+  ) {
+    const possibleImages =
+      IMAGE_EXTENSIONS.map(
+        (extension) =>
+          `${folder}/${index}.${extension}`
+      );
 
     const checks = await Promise.all(
       possibleImages.map(async (src) => {
-        const exists = await imageExists(src);
-        return exists ? src : null;
+        const exists =
+          await imageExists(src);
+
+        return exists
+          ? src
+          : null;
       })
     );
 
-    const foundImage = checks.find(Boolean);
+    const foundImage =
+      checks.find(Boolean);
 
     if (foundImage) {
       images.push(foundImage);
@@ -134,39 +156,67 @@ async function discoverNumberedImages(folder, max = 60) {
   return images;
 }
 
+
 async function discoverImages(folder) {
-  const manifestImages = await loadManifest(folder);
+  const manifestImages =
+    await loadManifest(folder);
 
   if (manifestImages?.length) {
     return manifestImages;
   }
 
-  return discoverNumberedImages(folder);
+  return discoverNumberedImages(
+    folder
+  );
 }
 
 
 /* ========================================
-   Слайдер фотографий
+   СЛАЙДЕР
 ======================================== */
 
 class GallerySlider {
-  constructor(root, images, lightbox) {
+  constructor(
+    root,
+    images,
+    lightbox
+  ) {
     this.root = root;
     this.images = images;
     this.lightbox = lightbox;
 
     this.index = 0;
+
     this.touchStartX = 0;
     this.touchDeltaX = 0;
 
     this.autoPlayTimer = null;
     this.autoPlayDelay = 4000;
 
-    this.track = root.querySelector('.slider-track');
-    this.dots = root.querySelector('.slider-dots');
-    this.prevBtn = root.querySelector('.slider-arrow--prev');
-    this.nextBtn = root.querySelector('.slider-arrow--next');
-    this.viewport = root.querySelector('.slider-viewport');
+    this.track =
+      root.querySelector(
+        '.slider-track'
+      );
+
+    this.dots =
+      root.querySelector(
+        '.slider-dots'
+      );
+
+    this.prevBtn =
+      root.querySelector(
+        '.slider-arrow--prev'
+      );
+
+    this.nextBtn =
+      root.querySelector(
+        '.slider-arrow--next'
+      );
+
+    this.viewport =
+      root.querySelector(
+        '.slider-viewport'
+      );
 
     this.render();
     this.bindEvents();
@@ -175,198 +225,343 @@ class GallerySlider {
     this.startAutoPlay();
   }
 
+
   render() {
     if (!this.images.length) {
       this.root.innerHTML = `
         <div class="gallery-empty">
-          <p>Фотографии скоро появятся в этой галерее.</p>
+          <p>
+            Фотографии скоро появятся
+            в этой галерее.
+          </p>
         </div>
       `;
+
       return;
     }
 
-    this.track.innerHTML = this.images
-      .map(
-        (src, index) => `
-          <article class="slider-slide">
+    this.track.innerHTML =
+      this.images
+        .map(
+          (src, index) => `
+            <article
+              class="slider-slide"
+            >
+              <button
+                class="gallery-card"
+                type="button"
+                data-index="${index}"
+                aria-label="
+                  Открыть фото
+                  ${index + 1}
+                  из
+                  ${this.images.length}
+                "
+              >
+                <div
+                  class="
+                    gallery-card__frame
+                  "
+                >
+                  <img
+                    src="${src}"
+                    alt="
+                      Фото
+                      ${index + 1}
+                    "
+                    loading="${
+                      index === 0
+                        ? 'eager'
+                        : 'lazy'
+                    }"
+                    fetchpriority="${
+                      index === 0
+                        ? 'high'
+                        : 'auto'
+                    }"
+                    decoding="async"
+                  >
+                </div>
+
+                <span
+                  class="
+                    gallery-card__zoom
+                  "
+                  aria-hidden="true"
+                >
+                  ⛶
+                </span>
+              </button>
+            </article>
+          `
+        )
+        .join('');
+
+    this.dots.innerHTML =
+      this.images
+        .map(
+          (_, index) => `
             <button
-              class="gallery-card"
+              class="
+                slider-dot
+                ${
+                  index === 0
+                    ? 'is-active'
+                    : ''
+                }
+              "
               type="button"
               data-index="${index}"
-              aria-label="Открыть фото ${index + 1} из ${this.images.length}"
-            >
-              <div class="gallery-card__frame">
-                <img
-                  src="${src}"
-                  alt="Фото ${index + 1}"
-                  loading="${index === 0 ? 'eager' : 'lazy'}"
-                  fetchpriority="${index === 0 ? 'high' : 'auto'}"
-                  decoding="async"
-                >
-              </div>
-
-              <span class="gallery-card__zoom" aria-hidden="true">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                >
-                  <path
-                    d="M7.5 3H4.5C3.67 3 3 3.67 3 4.5V7.5
-                       M11.5 3H14.5C15.33 3 16 3.67 16 4.5V7.5
-                       M11.5 15H14.5C15.33 15 16 14.33 16 13.5V10.5
-                       M7.5 15H4.5C3.67 15 3 14.33 3 13.5V10.5"
-                    stroke="currentColor"
-                    stroke-width="1.4"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </span>
-            </button>
-          </article>
-        `
-      )
-      .join('');
-
-    this.dots.innerHTML = this.images
-      .map(
-        (_, index) => `
-          <button
-            class="slider-dot${index === 0 ? ' is-active' : ''}"
-            type="button"
-            data-index="${index}"
-            aria-label="Перейти к фото ${index + 1}"
-          ></button>
-        `
-      )
-      .join('');
+              aria-label="
+                Перейти к фото
+                ${index + 1}
+              "
+            ></button>
+          `
+        )
+        .join('');
   }
 
+
   bindEvents() {
-    if (!this.images.length) return;
+    if (!this.images.length) {
+      return;
+    }
 
-    this.prevBtn?.addEventListener('click', () => {
-      this.goTo(this.index - 1);
-    });
+    this.prevBtn?.addEventListener(
+      'click',
+      () => {
+        this.goTo(
+          this.index - 1
+        );
+      }
+    );
 
-    this.nextBtn?.addEventListener('click', () => {
-      this.goTo(this.index + 1);
-    });
+    this.nextBtn?.addEventListener(
+      'click',
+      () => {
+        this.goTo(
+          this.index + 1
+        );
+      }
+    );
 
-    this.dots?.addEventListener('click', (event) => {
-      const dot = event.target.closest('.slider-dot');
+    this.dots?.addEventListener(
+      'click',
+      (event) => {
+        const dot =
+          event.target.closest(
+            '.slider-dot'
+          );
 
-      if (!dot) return;
+        if (!dot) {
+          return;
+        }
 
-      this.goTo(Number(dot.dataset.index));
-    });
+        this.goTo(
+          Number(
+            dot.dataset.index
+          )
+        );
+      }
+    );
 
-    this.track?.addEventListener('click', (event) => {
-      const card = event.target.closest('.gallery-card');
+    this.track?.addEventListener(
+      'click',
+      (event) => {
+        const card =
+          event.target.closest(
+            '.gallery-card'
+          );
 
-      if (!card) return;
+        if (!card) {
+          return;
+        }
 
-      this.stopAutoPlay();
+        this.stopAutoPlay();
 
-      this.lightbox.open(
-        this.images,
-        Number(card.dataset.index)
-      );
-    });
+        this.lightbox.open(
+          this.images,
+          Number(
+            card.dataset.index
+          )
+        );
+      }
+    );
+
 
     this.viewport?.addEventListener(
       'touchstart',
       (event) => {
         this.stopAutoPlay();
-        this.touchStartX = event.changedTouches[0].clientX;
+
+        this.touchStartX =
+          event.changedTouches[0]
+            .clientX;
+
         this.touchDeltaX = 0;
       },
-      { passive: true }
+      {
+        passive: true
+      }
     );
+
 
     this.viewport?.addEventListener(
       'touchmove',
       (event) => {
         this.touchDeltaX =
-          event.changedTouches[0].clientX - this.touchStartX;
+          event.changedTouches[0]
+            .clientX
+          -
+          this.touchStartX;
       },
-      { passive: true }
+      {
+        passive: true
+      }
     );
+
 
     this.viewport?.addEventListener(
       'touchend',
       () => {
-        if (Math.abs(this.touchDeltaX) >= 48) {
-          if (this.touchDeltaX < 0) {
-            this.goTo(this.index + 1, false);
+        if (
+          Math.abs(
+            this.touchDeltaX
+          ) >= 48
+        ) {
+          if (
+            this.touchDeltaX < 0
+          ) {
+            this.goTo(
+              this.index + 1,
+              false
+            );
           } else {
-            this.goTo(this.index - 1, false);
+            this.goTo(
+              this.index - 1,
+              false
+            );
           }
         }
 
-        window.setTimeout(() => {
-          this.startAutoPlay();
-        }, 1500);
+        window.setTimeout(
+          () => {
+            this.startAutoPlay();
+          },
+          1500
+        );
       },
-      { passive: true }
+      {
+        passive: true
+      }
     );
 
-    this.root.addEventListener('mouseenter', () => {
-      this.stopAutoPlay();
-    });
 
-    this.root.addEventListener('mouseleave', () => {
-      this.startAutoPlay();
-    });
-
-    window.addEventListener('resize', () => {
-      this.update(false);
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
+    this.root.addEventListener(
+      'mouseenter',
+      () => {
         this.stopAutoPlay();
-      } else {
+      }
+    );
+
+    this.root.addEventListener(
+      'mouseleave',
+      () => {
         this.startAutoPlay();
       }
-    });
+    );
+
+    window.addEventListener(
+      'resize',
+      () => {
+        this.update(false);
+      }
+    );
+
+    document.addEventListener(
+      'visibilitychange',
+      () => {
+        if (document.hidden) {
+          this.stopAutoPlay();
+        } else {
+          this.startAutoPlay();
+        }
+      }
+    );
   }
+
 
   preloadNextImages() {
-    this.images.slice(1, 4).forEach((src) => {
-      const image = new Image();
-      image.src = src;
-    });
+    this.images
+      .slice(1, 4)
+      .forEach((src) => {
+        const image =
+          new Image();
+
+        image.src = src;
+      });
   }
 
+
   startAutoPlay() {
-    if (this.images.length <= 1) return;
+    if (
+      this.images.length <= 1
+    ) {
+      return;
+    }
 
     this.stopAutoPlay();
 
-    this.autoPlayTimer = window.setInterval(() => {
-      this.goTo(this.index + 1, false);
-    }, this.autoPlayDelay);
+    this.autoPlayTimer =
+      window.setInterval(
+        () => {
+          this.goTo(
+            this.index + 1,
+            false
+          );
+        },
+        this.autoPlayDelay
+      );
   }
+
 
   stopAutoPlay() {
-    if (!this.autoPlayTimer) return;
+    if (
+      !this.autoPlayTimer
+    ) {
+      return;
+    }
 
-    window.clearInterval(this.autoPlayTimer);
+    window.clearInterval(
+      this.autoPlayTimer
+    );
+
     this.autoPlayTimer = null;
   }
+
 
   restartAutoPlay() {
     this.stopAutoPlay();
     this.startAutoPlay();
   }
 
-  goTo(nextIndex, restartTimer = true) {
-    if (!this.images.length) return;
+
+  goTo(
+    nextIndex,
+    restartTimer = true
+  ) {
+    if (!this.images.length) {
+      return;
+    }
 
     this.index =
-      (nextIndex + this.images.length) %
+      (
+        nextIndex
+        +
+        this.images.length
+      )
+      %
       this.images.length;
 
     this.update(true);
@@ -376,45 +571,63 @@ class GallerySlider {
     }
   }
 
-  update(animate = true) {
-    if (!this.track) return;
+
+  update(
+    animate = true
+  ) {
+    if (!this.track) {
+      return;
+    }
 
     if (!animate) {
-      this.track.style.transition = 'none';
+      this.track.style.transition =
+        'none';
     }
 
     this.track.style.transform =
-      `translate3d(-${this.index * 100}%, 0, 0)`;
+      `translate3d(
+        -${this.index * 100}%,
+        0,
+        0
+      )`;
 
     if (!animate) {
       this.track.offsetHeight;
-      this.track.style.transition = '';
+      this.track.style.transition =
+        '';
     }
 
     this.dots
-      ?.querySelectorAll('.slider-dot')
-      .forEach((dot, dotIndex) => {
-        dot.classList.toggle(
-          'is-active',
-          dotIndex === this.index
-        );
-      });
+      ?.querySelectorAll(
+        '.slider-dot'
+      )
+      .forEach(
+        (dot, dotIndex) => {
+          dot.classList.toggle(
+            'is-active',
+            dotIndex === this.index
+          );
+        }
+      );
 
-    const onlyOneImage = this.images.length <= 1;
+    const onlyOneImage =
+      this.images.length <= 1;
 
     if (this.prevBtn) {
-      this.prevBtn.disabled = onlyOneImage;
+      this.prevBtn.disabled =
+        onlyOneImage;
     }
 
     if (this.nextBtn) {
-      this.nextBtn.disabled = onlyOneImage;
+      this.nextBtn.disabled =
+        onlyOneImage;
     }
   }
 }
 
 
 /* ========================================
-   Просмотр фотографии на весь экран
+   LIGHTBOX
 ======================================== */
 
 class Lightbox {
@@ -423,146 +636,285 @@ class Lightbox {
     this.images = [];
     this.index = 0;
 
-    this.image = root.querySelector('.lightbox-image');
-    this.counter = root.querySelector('.lightbox-counter');
-    this.prevBtn = root.querySelector('.lightbox-arrow--prev');
-    this.nextBtn = root.querySelector('.lightbox-arrow--next');
+    this.image =
+      root.querySelector(
+        '.lightbox-image'
+      );
+
+    this.counter =
+      root.querySelector(
+        '.lightbox-counter'
+      );
+
+    this.prevBtn =
+      root.querySelector(
+        '.lightbox-arrow--prev'
+      );
+
+    this.nextBtn =
+      root.querySelector(
+        '.lightbox-arrow--next'
+      );
 
     root
-      .querySelectorAll('[data-lightbox-close]')
-      .forEach((element) => {
-        element.addEventListener('click', () => {
-          this.close();
-        });
-      });
+      .querySelectorAll(
+        '[data-lightbox-close]'
+      )
+      .forEach(
+        (element) => {
+          element.addEventListener(
+            'click',
+            () => {
+              this.close();
+            }
+          );
+        }
+      );
 
-    this.prevBtn?.addEventListener('click', () => {
-      this.step(-1);
-    });
-
-    this.nextBtn?.addEventListener('click', () => {
-      this.step(1);
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (!this.root.classList.contains('is-open')) return;
-
-      if (event.key === 'Escape') {
-        this.close();
-      }
-
-      if (event.key === 'ArrowLeft') {
+    this.prevBtn?.addEventListener(
+      'click',
+      () => {
         this.step(-1);
       }
+    );
 
-      if (event.key === 'ArrowRight') {
+    this.nextBtn?.addEventListener(
+      'click',
+      () => {
         this.step(1);
       }
-    });
+    );
+
+    document.addEventListener(
+      'keydown',
+      (event) => {
+        if (
+          !this.root
+            .classList
+            .contains(
+              'is-open'
+            )
+        ) {
+          return;
+        }
+
+        if (
+          event.key === 'Escape'
+        ) {
+          this.close();
+        }
+
+        if (
+          event.key === 'ArrowLeft'
+        ) {
+          this.step(-1);
+        }
+
+        if (
+          event.key === 'ArrowRight'
+        ) {
+          this.step(1);
+        }
+      }
+    );
   }
 
-  open(images, index = 0) {
+
+  open(
+    images,
+    index = 0
+  ) {
     this.images = images;
     this.index = index;
+
     this.render();
 
     this.root.hidden = false;
-    this.root.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
 
-    requestAnimationFrame(() => {
-      this.root.classList.add('is-open');
-    });
+    this.root.setAttribute(
+      'aria-hidden',
+      'false'
+    );
+
+    document.body.style.overflow =
+      'hidden';
+
+    requestAnimationFrame(
+      () => {
+        this.root.classList.add(
+          'is-open'
+        );
+      }
+    );
   }
+
 
   close() {
-    this.root.classList.remove('is-open');
-    this.root.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    this.root.classList.remove(
+      'is-open'
+    );
 
-    window.setTimeout(() => {
-      if (!this.root.classList.contains('is-open')) {
-        this.root.hidden = true;
+    this.root.setAttribute(
+      'aria-hidden',
+      'true'
+    );
 
-        if (this.image) {
-          this.image.src = '';
+    document.body.style.overflow =
+      '';
+
+    window.setTimeout(
+      () => {
+        if (
+          !this.root
+            .classList
+            .contains(
+              'is-open'
+            )
+        ) {
+          this.root.hidden =
+            true;
+
+          if (this.image) {
+            this.image.src =
+              '';
+          }
         }
-      }
-    }, 450);
+      },
+      450
+    );
   }
 
+
   step(direction) {
-    if (!this.images.length) return;
+    if (!this.images.length) {
+      return;
+    }
 
     this.index =
-      (this.index + direction + this.images.length) %
+      (
+        this.index
+        +
+        direction
+        +
+        this.images.length
+      )
+      %
       this.images.length;
 
     this.render();
   }
 
-  render() {
-    if (!this.image || !this.images.length) return;
 
-    this.image.src = this.images[this.index];
+  render() {
+    if (
+      !this.image
+      ||
+      !this.images.length
+    ) {
+      return;
+    }
+
+    this.image.src =
+      this.images[
+        this.index
+      ];
+
     this.image.alt =
-      `Фото ${this.index + 1} из ${this.images.length}`;
+      `Фото ${
+        this.index + 1
+      } из ${
+        this.images.length
+      }`;
 
     if (this.counter) {
       this.counter.textContent =
-        `${this.index + 1} / ${this.images.length}`;
+        `${
+          this.index + 1
+        } / ${
+          this.images.length
+        }`;
     }
 
-    const onlyOneImage = this.images.length <= 1;
+    const onlyOneImage =
+      this.images.length <= 1;
 
     if (this.prevBtn) {
-      this.prevBtn.hidden = onlyOneImage;
+      this.prevBtn.hidden =
+        onlyOneImage;
     }
 
     if (this.nextBtn) {
-      this.nextBtn.hidden = onlyOneImage;
+      this.nextBtn.hidden =
+        onlyOneImage;
     }
   }
 }
 
 
 /* ========================================
-   Запуск галерей
+   ЗАПУСК ГАЛЕРЕЙ
 ======================================== */
 
-async function createGallery(sliderRoot, lightbox) {
-  const folder = sliderRoot.dataset.folder;
+async function createGallery(
+  sliderRoot,
+  lightbox
+) {
+  const folder =
+    sliderRoot.dataset.folder;
 
-  if (!folder) return;
-
-  const images = await discoverImages(folder);
-
-  new GallerySlider(sliderRoot, images, lightbox);
-}
-
-async function initGalleries() {
-  const lightboxRoot = document.getElementById('lightbox');
-
-  if (!lightboxRoot) {
-    console.error('Не найден блок lightbox');
+  if (!folder) {
     return;
   }
 
-  const lightbox = new Lightbox(lightboxRoot);
-  const sliders = [
-    ...document.querySelectorAll('[data-gallery]')
-  ];
+  const images =
+    await discoverImages(
+      folder
+    );
 
-  /*
-    Обе галереи загружаются одновременно:
-    отзывы и фотографии до/после.
-  */
-
-  await Promise.all(
-    sliders.map((sliderRoot) => {
-      return createGallery(sliderRoot, lightbox);
-    })
+  new GallerySlider(
+    sliderRoot,
+    images,
+    lightbox
   );
 }
+
+
+async function initGalleries() {
+  const lightboxRoot =
+    document.getElementById(
+      'lightbox'
+    );
+
+  if (!lightboxRoot) {
+    console.warn(
+      'Lightbox не найден. Галерея будет работать без открытия фото.'
+    );
+
+    return;
+  }
+
+  const lightbox =
+    new Lightbox(
+      lightboxRoot
+    );
+
+  const sliders = [
+    ...document.querySelectorAll(
+      '[data-gallery]'
+    )
+  ];
+
+  await Promise.all(
+    sliders.map(
+      (sliderRoot) => {
+        return createGallery(
+          sliderRoot,
+          lightbox
+        );
+      }
+    )
+  );
+}
+
 
 initGalleries();
