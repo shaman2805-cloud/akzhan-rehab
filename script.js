@@ -205,7 +205,6 @@
   function updateGalleryCounter() {
     const total = galleryCards().length;
     const current = indexForTrack();
-    $('.gallery-counter').textContent = `${String(current + 1).padStart(2, '0')} / ${total}`;
     $('#results').style.setProperty('--gallery-progress', String((current + 1) / total));
     const rail = track();
     const bounds = rail.getBoundingClientRect();
@@ -363,7 +362,6 @@
     if (!entry) return;
     img.src = entry.src;
     img.alt = entry.alt;
-    $('.lightbox-counter').textContent = `${fullIndex + 1} / ${fullImages.length}`;
     if (!reduced() && img.animate) {
       img.getAnimations().forEach(animation => animation.cancel());
       img.animate([{ opacity: 0, transform: 'scale(.94) translateY(14px)' }, { opacity: 1, transform: 'scale(1) translateY(0)' }], { duration: 440, easing: 'cubic-bezier(.22,1,.36,1)' });

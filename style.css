@@ -446,3 +446,6 @@ html.reduce-motion .reading-progress{display:none}
  .socials-heading{font-size:23px;margin-top:34px}.footer-socials{gap:10px;margin-top:20px}.footer-socials a{min-height:78px;padding:17px 12px;font-size:16px;gap:8px;border-radius:20px}.footer-socials .social-icon{width:22px;height:22px}.footer-socials a>svg:last-child{width:14px;height:14px}
 }
 @media(max-width:359px){.footer-socials a{font-size:14px;padding:15px 10px;gap:6px}.footer-socials .social-icon{width:20px;height:20px}.footer-socials a>svg:last-child{display:none}.student-income-value strong{font-size:31px}.certificate-navigation .icon-button{width:36px;height:36px}.certificates-heading .about-subtitle{font-size:21px}}
+
+/* Keep the close control right-aligned without a photo counter. */
+.lightbox-top{justify-content:flex-end}
