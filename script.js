@@ -4,20 +4,10 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const html = document.documentElement;
-  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const mobileQuery = window.matchMedia('(max-width: 640px)');
-  const motionKey = 'akzhan-motion-preference-v2';
-  let motionPreference = 'full';
-  try {
-    const saved = localStorage.getItem(motionKey);
-    if (['auto', 'full', 'reduced'].includes(saved)) motionPreference = saved;
-    // Apply the new default to returning visitors, preserving a deliberate opt-out.
-    else if (saved === null && localStorage.getItem('akzhan-motion-preference') === 'reduced') motionPreference = 'reduced';
-  } catch (_) { /* The control still works when device storage is unavailable. */ }
-  const reduced = () => motionPreference === 'reduced' || (motionPreference === 'auto' && motionQuery.matches);
-  html.classList.toggle('motion-full', motionPreference === 'full');
-  html.classList.toggle('reduce-motion', reduced());
-  const motionSelects = $$('.motion-select');
+  const reduced = () => false;
+  html.classList.add('motion-full');
+  html.classList.remove('reduce-motion');
   function watchMedia(query, listener) {
     if (query.addEventListener) query.addEventListener('change', listener);
     else if (query.addListener) query.addListener(listener);
@@ -26,6 +16,11 @@
   const menuToggle = $('.menu-toggle');
   const lightbox = $('#lightbox');
   const sticky = $('.mobile-action');
+  const stickyLink = $('a', sticky);
+  const bookingHref = stickyLink.href;
+  const clubSection = $('#club');
+  const clubHref = $('.club-copy .button').href;
+  let stickyContext = '';
   let heroPassed = false;
   let atContact = false;
   let menuOrigin = null;
@@ -137,7 +132,19 @@
     window.setTimeout(() => ripple.remove(), 900);
   }));
 
+  function syncStickyContext() {
+    const bounds = clubSection.getBoundingClientRect();
+    const readingLine = window.innerHeight * .45;
+    const inClub = bounds.top <= readingLine && bounds.bottom > readingLine;
+    const context = inClub ? 'club' : 'booking';
+    if (stickyContext === context) return;
+    stickyContext = context;
+    stickyLink.href = inClub ? clubHref : bookingHref;
+    $('.mobile-action-label', sticky).textContent = inClub ? 'Вступить в клуб' : 'Записаться на приём';
+    sticky.setAttribute('aria-label', inClub ? 'Присоединиться к клубу' : 'Быстрая запись');
+  }
   function syncSticky() {
+    syncStickyContext();
     const show = mobileQuery.matches && heroPassed && !atContact && !menu.open && !lightbox.open;
     sticky.hidden = false;
     sticky.classList.toggle('is-visible', show);
@@ -173,11 +180,11 @@
   // Native horizontal scrolling works with touch, trackpads and keyboard.
   const tabs = $$('[data-tab]');
   const panels = $$('.gallery-panel');
-  let panel = $('#panel-results');
+  let panel = $('.gallery-panel:not([hidden])');
   const track = () => $('.gallery-track', panel);
   const galleryCards = () => $$('.gallery-card', panel);
   const playButton = $('.gallery-play');
-  let userPaused = false;
+  let userPaused = true;
   let galleryVisible = false;
   let galleryHovered = false;
   let playTimer = null;
@@ -258,7 +265,7 @@
     });
     panels.forEach(item => { item.hidden = item.id !== tab.getAttribute('aria-controls'); });
     panel = document.getElementById(tab.getAttribute('aria-controls'));
-    $('.gallery-tabs').style.setProperty('--tab-shift', tab.dataset.tab === 'reviews' ? '100%' : '0%');
+    $('.gallery-tabs').style.setProperty('--tab-shift', `${tabs.indexOf(tab) * 100}%`);
     if (changing && !reduced() && panel.animate) {
       panel.getAnimations().forEach(animation => animation.cancel());
       panel.animate([
@@ -326,6 +333,30 @@
       updatePlayback();
     });
   });
+  const certificateTrack = $('.certificate-track');
+  const certificates = $$('[data-certificate]');
+  certificates.forEach((card, index) => card.addEventListener('click', event => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    fullImages = certificates.map(item => ({ src: item.href, alt: $('img', item).alt }));
+    fullIndex = index;
+    lightboxOrigin = card;
+    renderLightbox();
+    lightbox.showModal();
+    syncLock();
+    updatePlayback();
+  }));
+  function moveCertificates(direction) {
+    certificateTrack.scrollBy({ left: direction * certificateTrack.clientWidth * .85, behavior: 'smooth' });
+  }
+  $('.certificate-prev').addEventListener('click', () => moveCertificates(-1));
+  $('.certificate-next').addEventListener('click', () => moveCertificates(1));
+  certificateTrack.addEventListener('keydown', event => {
+    if (event.target !== certificateTrack || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    moveCertificates(event.key === 'ArrowLeft' ? -1 : 1);
+  });
+
   function renderLightbox() {
     const img = $('.lightbox-image');
     const entry = fullImages[fullIndex];
@@ -456,6 +487,7 @@
   const driftElements = $$('[data-drift]');
   let scrollFrame = null;
   function paintScroll() {
+    syncStickyContext();
     scrollFrame = null;
     const y = window.scrollY;
     const max = html.scrollHeight - window.innerHeight;
@@ -475,31 +507,6 @@
   window.addEventListener('scroll', () => {
     if (!scrollFrame) scrollFrame = requestAnimationFrame(paintScroll);
   }, { passive: true });
-  function applyMotion() {
-    html.classList.toggle('motion-full', motionPreference === 'full');
-    html.classList.toggle('reduce-motion', reduced());
-    motionSelects.forEach(select => { select.value = motionPreference; });
-    if (reduced()) {
-      journeyAnimation?.cancel();
-      countAnimations.forEach((id, element) => { cancelAnimationFrame(id); element.textContent = element.dataset.count; });
-      countAnimations.clear();
-      // Complete in-flight Web Animations when the user switches motion off.
-      if (document.getAnimations) document.getAnimations().forEach(animation => {
-        if (Number.isFinite(animation.effect?.getTiming().iterations)) {
-          try { animation.finish(); } catch (_) { animation.cancel(); }
-        }
-      });
-    }
-    updatePlayback();
-    updateGalleryCounter();
-    paintScroll();
-  }
-  motionSelects.forEach(select => select.addEventListener('change', () => {
-    motionPreference = select.value;
-    try { localStorage.setItem(motionKey, motionPreference); } catch (_) { /* Session-only choice. */ }
-    applyMotion();
-  }));
-  watchMedia(motionQuery, applyMotion);
   watchMedia(mobileQuery, syncSticky);
 
   function resumeMotion() {
@@ -536,7 +543,5 @@
   window.addEventListener('hashchange', () => { if (location.hash === '#reviews') selectTab($('#tab-reviews')); });
   if (location.hash === '#reviews') selectTab($('#tab-reviews'));
   html.classList.add('motion-ready');
-  $$('.motion-setting').forEach(control => { control.hidden = false; });
-  applyMotion();
   resumeMotion();
 })();
