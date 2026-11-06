@@ -449,3 +449,19 @@ html.reduce-motion .reading-progress{display:none}
 
 /* Keep the close control right-aligned without a photo counter. */
 .lightbox-top{justify-content:flex-end}
+
+/* Service titles, club contents and individual training. */
+.club-benefit{max-width:570px;margin-top:16px;color:#f3e6e0;font-size:15px;line-height:1.8}
+.club .club-features p>.club-feature-copy{min-width:0;padding-top:0;color:#dfcfcb;font-size:13px;line-height:1.7}
+.club-feature-copy strong{display:block;margin-bottom:8px;color:#fff5eb;font-size:15px;line-height:1.4;font-weight:500}
+.club .orbit-core{font-size:108px;letter-spacing:-.07em}
+.club .orbit-core>span{font-size:34px;letter-spacing:.04em;text-transform:none;margin:9px 0 0}
+.education .education-heading{font-size:clamp(30px,3.9vw,54px);line-height:1.15}
+@media(max-width:850px){.club-features{grid-template-columns:repeat(2,minmax(0,1fr))}.education .education-heading{font-size:clamp(26px,3.8vw,33px)}}
+@media(max-width:640px){
+ .club-benefit{font-size:14px;line-height:1.8}
+ .club .club-features p>.club-feature-copy{font-size:12px;line-height:1.65}
+ .club-feature-copy strong{font-size:14px;margin-bottom:7px}
+ .club .orbit-core{font-size:76px}.club .orbit-core>span{font-size:26px}
+ .education .education-heading{font-size:clamp(24px,6.8vw,38px)}
+}
